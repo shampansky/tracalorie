@@ -137,54 +137,37 @@ class App {
 
     document
       .querySelector('#meal-form')
-      ?.addEventListener('submit', this._newMeal.bind(this));
+      ?.addEventListener('submit', this._newItem.bind(this, 'meal'));
 
     document
       .querySelector('#workout-form')
-      ?.addEventListener('submit', this._newWorkout.bind(this));
+      ?.addEventListener('submit', this._newItem.bind(this, 'workout'));
   }
 
-  _newMeal(e) {
+  _newItem(type, e) {
     e.preventDefault();
-    const name = document.querySelector('#meal-name');
-    const calories = document.querySelector('#meal-calories');
+    const name = document.querySelector(`#${type}-name`);
+    const calories = document.querySelector(`#${type}-calories`);
 
     if (!name.value || !calories.value) {
       alert('Please fill in all fields');
       return;
     }
 
-    const meal = new Meal(name.value, +calories.value);
-    this._tracker.addMeal(meal);
+    if (type === 'meal') {
+      const meal = new Meal(name.value, +calories.value);
+      this._tracker.addMeal(meal);
+    } else {
+      const workout = new Workout(name.value, +calories.value);
+      this._tracker.addWorkout(workout);
+    }
+
     name.value = '';
     calories.value = '';
 
-    const collapseMeal = document.querySelector('#collapse-meal');
-    if (collapseMeal) {
-      const bsCollapse = new bootstrap.Collapse(collapseMeal, { toggle: true });
-    }
-  }
-
-  _newWorkout(e) {
-    e.preventDefault();
-    const name = document.querySelector('#workout-name');
-    const calories = document.querySelector('#workout-calories');
-
-    if (!name.value || !calories.value) {
-      alert('Please fill in all fields');
-      return;
-    }
-
-    const workout = new Workout(name.value, +calories.value);
-    this._tracker.addWorkout(workout);
-    name.value = '';
-    calories.value = '';
-
-    const collapseWorkout = document.querySelector('#collapse-workout');
-    if (collapseWorkout) {
-      const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
-        toggle: true,
-      });
+    const collapseItem = document.querySelector(`#collapse-${type}`);
+    if (collapseItem) {
+      const bsCollapse = new bootstrap.Collapse(collapseItem, { toggle: true });
     }
   }
 }
