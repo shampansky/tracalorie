@@ -119,14 +119,74 @@ class Workout {
   }
 }
 
-const tracker = new CalorieTracker();
+// const tracker = new CalorieTracker();
 
-const breakfast = new Meal('Breakfast', 400);
-const lunch = new Meal('Lunch', 3350);
+// const breakfast = new Meal('Breakfast', 400);
+// const lunch = new Meal('Lunch', 3350);
 
-tracker.addMeal(breakfast);
-tracker.addMeal(lunch);
-const run = new Workout('Morning Run', 350);
-tracker.addWorkout(run);
+// tracker.addMeal(breakfast);
+// tracker.addMeal(lunch);
+// const run = new Workout('Morning Run', 350);
+// tracker.addWorkout(run);
 
-console.log(tracker);
+// console.log(tracker);
+
+class App {
+  constructor() {
+    this._tracker = new CalorieTracker();
+
+    document
+      .querySelector('#meal-form')
+      ?.addEventListener('submit', this._newMeal.bind(this));
+
+    document
+      .querySelector('#workout-form')
+      ?.addEventListener('submit', this._newWorkout.bind(this));
+  }
+
+  _newMeal(e) {
+    e.preventDefault();
+    const name = document.querySelector('#meal-name');
+    const calories = document.querySelector('#meal-calories');
+
+    if (!name.value || !calories.value) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const meal = new Meal(name.value, +calories.value);
+    this._tracker.addMeal(meal);
+    name.value = '';
+    calories.value = '';
+
+    const collapseMeal = document.querySelector('#collapse-meal');
+    if (collapseMeal) {
+      const bsCollapse = new bootstrap.Collapse(collapseMeal, { toggle: true });
+    }
+  }
+
+  _newWorkout(e) {
+    e.preventDefault();
+    const name = document.querySelector('#workout-name');
+    const calories = document.querySelector('#workout-calories');
+
+    if (!name.value || !calories.value) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const workout = new Workout(name.value, +calories.value);
+    this._tracker.addWorkout(workout);
+    name.value = '';
+    calories.value = '';
+
+    const collapseWorkout = document.querySelector('#collapse-workout');
+    if (collapseWorkout) {
+      const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+        toggle: true,
+      });
+    }
+  }
+}
+
+const app = new App();
