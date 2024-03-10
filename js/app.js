@@ -2,7 +2,7 @@ class CalorieTracker {
   constructor() {
     this._calorieLimit = Storage.getCalorieLimit();
     this._totalCalories = Storage.getTotalCalories();
-    this._meals = [];
+    this._meals = Storage.getMeals();
     this._workouts = [];
 
     this._displayCaloriesLimit();
@@ -19,6 +19,7 @@ class CalorieTracker {
     this._meals.push(meal);
     this._totalCalories += meal.calories;
     Storage.updateTotalCalories(this._totalCalories);
+    Storage.saveMeals(this._meals);
     this._displayNewMeal(meal);
     this._render();
   }
@@ -59,6 +60,10 @@ class CalorieTracker {
     Storage.setCalorieLimit(calorieLimit);
     this._displayCaloriesLimit();
     this._render();
+  }
+
+  loadItems() {
+    this._meals.forEach((meal) => this._displayNewMeal(meal));
   }
 
   // Private Methods
@@ -217,6 +222,15 @@ class Storage {
   static updateTotalCalories(calories) {
     localStorage.setItem('totalCalories', calories);
   }
+
+  static getMeals() {
+    const storageMeals = localStorage.getItem('meals');
+    return storageMeals ? JSON.parse(storageMeals) : [];
+  }
+
+  static saveMeals(meals) {
+    localStorage.setItem('meals', JSON.stringify(meals));
+  }
 }
 
 class App {
@@ -254,6 +268,8 @@ class App {
     document
       .querySelector('#limit-form')
       ?.addEventListener('submit', this._setLimit.bind(this));
+
+    this._tracker.loadItems();
   }
 
   _newItem(type, e) {
