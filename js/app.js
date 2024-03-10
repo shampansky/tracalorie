@@ -19,7 +19,7 @@ class CalorieTracker {
     this._meals.push(meal);
     this._totalCalories += meal.calories;
     Storage.updateTotalCalories(this._totalCalories);
-    Storage.saveMeals(this._meals);
+    Storage.updateMeals(this._meals);
     this._displayNewMeal(meal);
     this._render();
   }
@@ -28,7 +28,7 @@ class CalorieTracker {
     this._workouts.push(workout);
     this._totalCalories -= workout.calories;
     Storage.updateTotalCalories(this._totalCalories);
-    Storage.saveWorkouts(this._workouts);
+    Storage.updateWorkouts(this._workouts);
     this._displayNewWorkout(workout);
     this._render();
   }
@@ -38,6 +38,7 @@ class CalorieTracker {
     this._totalCalories -= this._meals[index].calories;
     Storage.updateTotalCalories(this._totalCalories);
     this._meals.splice(index, 1);
+    Storage.updateMeals(this._meals);
     this._render();
   }
 
@@ -46,6 +47,7 @@ class CalorieTracker {
     this._totalCalories += this._workouts[index].calories;
     Storage.updateTotalCalories(this._totalCalories);
     this._workouts.splice(index, 1);
+    Storage.updateWorkouts(this._workouts);
     this._render();
   }
 
@@ -230,7 +232,7 @@ class Storage {
     return storageMeals ? JSON.parse(storageMeals) : [];
   }
 
-  static saveMeals(meals) {
+  static updateMeals(meals) {
     localStorage.setItem('meals', JSON.stringify(meals));
   }
 
@@ -239,7 +241,7 @@ class Storage {
     return storageWorkouts ? JSON.parse(storageWorkouts) : [];
   }
 
-  static saveWorkouts(workouts) {
+  static updateWorkouts(workouts) {
     localStorage.setItem('workouts', JSON.stringify(workouts));
   }
 }
